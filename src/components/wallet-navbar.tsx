@@ -7,17 +7,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
-import { Loader } from "lucide-react";
+import { Loader, Wallet } from "lucide-react";
 import { useConnectors, useConnect } from "wagmi";
-import RoundButton from "./round-button";
 
-export default function WalletDialog() {
+export default function WalletNavbar() {
   const wallets = useConnectors();
   const { connect } = useConnect();
   return (
     <Dialog>
-      <DialogTrigger>
-        <RoundButton />
+      <DialogTrigger className="">
+        <div className="bg-[#101010] text-gray-400 p-3 rounded-sm py-2 flex items-center gap-2"><Wallet size={15} /> Connect Wallet</div>
       </DialogTrigger>
       <DialogContent className="border-[#171717] font-[family-name:var(--font-poppins)]  text-white p-6 rounded-lg">
         <DialogHeader className="flex flex-col justify-center items-center text-center">
