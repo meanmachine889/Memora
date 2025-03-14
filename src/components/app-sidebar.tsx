@@ -26,8 +26,8 @@ const items = [
     icon: Home,
   },
   {
-    title: "Inbox",
-    url: "#",
+    title: "My Content",
+    url: "/dashboard/content",
     icon: Inbox,
   },
   {

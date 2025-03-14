@@ -1,0 +1,24 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Course {
+  id          String   @id @default(uuid())  // Unique Course ID (UUID)
+  title       String
+  instructors String[] // Array of creator wallet addresses
+  image       String   // Course thumbnail (IPFS/Cloud URL)
+  images      String[] // Course content images
+  nfts        CourseNFT[] // Relation to NFTs
+}
+
+model CourseNFT {
+  nftId    String @id  // NFT Token ID (on blockchain)
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId String // Foreign key linking to Course
+  tokenURI String // IPFS link to NFT metadata (unique per NFT)
+}

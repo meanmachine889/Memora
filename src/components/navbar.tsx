@@ -20,7 +20,7 @@ export default function Navbar() {
           <div className="flex items-center gap-4">
             <div className="flex items-center p-3 py-2 border-[#1b1b1b] border bg-[#101010] rounded-sm space-x-2">
               <span>
-                {address.slice(0, 6)}...{address.slice(-4)}
+                {address?.slice(0, 6)}...{address?.slice(-4)}
               </span>
             </div>
           </div>
