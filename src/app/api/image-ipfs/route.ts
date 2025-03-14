@@ -7,7 +7,6 @@ const PINATA_SECRET_API_KEY =
 const PINATA_FILE_URL = "https://api.pinata.cloud/pinning/pinFileToIPFS";
 const PINATA_JSON_URL = "https://api.pinata.cloud/pinning/pinJSONToIPFS";
 
-// Step 1: Upload image to IPFS
 async function uploadImageToPinata(imageFile: File) {
   try {
     const formData = new FormData();
@@ -39,7 +38,6 @@ async function uploadImageToPinata(imageFile: File) {
   }
 }
 
-// Step 2: Upload metadata to IPFS
 async function uploadMetadataToPinata(metadata: any) {
   try {
     const res = await fetch(PINATA_JSON_URL, {
@@ -73,13 +71,13 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     
-    // Get file and metadata from request
+
     const file = formData.get("file") as File;
     const name = formData.get("name") as string;
     const description = formData.get("description") as string;
     const price = formData.get("price") as string;
     
-    // Validate inputs
+
     if (!file) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
@@ -88,14 +86,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing required metadata fields" }, { status: 400 });
     }
 
-    // Step 1: Upload the image first
+
     const imageUploadResult = await uploadImageToPinata(file);
     
     if (!imageUploadResult.success) {
       return NextResponse.json({ error: imageUploadResult.error }, { status: 500 });
     }
     
-    // Step 2: Create and upload the metadata with the image IPFS URL
+
     const metadata = {
       name,
       description,
@@ -104,7 +102,7 @@ export async function POST(req: NextRequest) {
       attributes: []
     };
     
-    // You can add custom attributes if needed
+
     if (formData.has("attributes")) {
       try {
         metadata.attributes = JSON.parse(formData.get("attributes") as string);
@@ -119,7 +117,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: metadataUploadResult.error }, { status: 500 });
     }
     
-    // Return both image and metadata information
+
     return NextResponse.json({
       success: true,
       image: {

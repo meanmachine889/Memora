@@ -3,6 +3,7 @@ import { Button } from './ui/button';
 
 export default function NFTUploadForm() {
   const [isUploading, setIsUploading] = useState(false);
+  
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [uploadResult, setUploadResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
@@ -40,9 +41,9 @@ export default function NFTUploadForm() {
       data.append('description', formData.description);
       data.append('price', formData.price);
       
-      // Optional: Add attributes if needed
-      // const attributes = [{ trait_type: "Background", value: "Blue" }];
-      // data.append('attributes', JSON.stringify(attributes));
+      
+      
+      
       
       const response = await fetch('/api/image-ipfs', {
         method: 'POST',
