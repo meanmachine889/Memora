@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 
-const PINATA_API_KEY = "a56bb58089b614c59b21";
-const PINATA_SECRET_API_KEY =
-  "82cdfc13cb930a683d5bd003ca6cd44eed4c54af4f5a57326145a7dfce4eab7b";
+const PINATA_API_KEY = process.env.PINATA_API_KEY;
+const PINATA_SECRET_API_KEY = process.env.PINATA_SECRET_API_KEY;
 const PINATA_FILE_URL = "https://api.pinata.cloud/pinning/pinFileToIPFS";
 const PINATA_JSON_URL = "https://api.pinata.cloud/pinning/pinJSONToIPFS";
 
@@ -15,8 +14,8 @@ async function uploadImageToPinata(imageFile: File) {
     const res = await fetch(PINATA_FILE_URL, {
       method: "POST",
       headers: {
-        pinata_api_key: PINATA_API_KEY,
-        pinata_secret_api_key: PINATA_SECRET_API_KEY,
+        pinata_api_key: PINATA_API_KEY!,
+        pinata_secret_api_key: PINATA_SECRET_API_KEY!,
       },
       body: formData,
     });
@@ -44,8 +43,8 @@ async function uploadMetadataToPinata(metadata: any) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        pinata_api_key: PINATA_API_KEY,
-        pinata_secret_api_key: PINATA_SECRET_API_KEY,
+        pinata_api_key: PINATA_API_KEY!,
+        pinata_secret_api_key: PINATA_SECRET_API_KEY!,
       },
       body: JSON.stringify(metadata),
     });
