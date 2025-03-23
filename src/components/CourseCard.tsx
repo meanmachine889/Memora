@@ -11,6 +11,7 @@ export interface Course {
   image: string; 
   nftIds: string[]; 
   images: string[];
+  address: string;
 }
 
 export default function CourseCard({ course, admin }: { course: Course , admin?: boolean }) {

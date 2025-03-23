@@ -5,8 +5,9 @@ import { config } from "../../config";
 import { Button } from "./ui/button";
 import { LogOut } from "lucide-react";
 
+const queryClient = new QueryClient();
+
 export default function Address() {
-  const queryClient = new QueryClient();
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
@@ -19,13 +20,14 @@ export default function Address() {
 function AddressProvider() {
   const { address } = useAccount();
   const { disconnect } = useDisconnect();
+
+  if (typeof window === "undefined") return null;
+
   return (
     <div className="flex max-w-full items-center space-x-4">
       <div className="flex items-center space-x-4">
         <div className="flex items-center p-3 py-2 border-[#1b1b1b] border bg-[#101010] text-gray-400 rounded-sm space-x-2">
-          <span>
-            {address?.slice(0, 11)}...{address?.slice(-4)}
-          </span>
+          {address ? `${address.slice(0, 11)}...${address.slice(-4)}` : "Loading..."}
         </div>
       </div>
       <Button

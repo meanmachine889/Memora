@@ -16,7 +16,7 @@ export default function Navbar() {
       </div>
       {!address && <WalletNavbar />}
       {address && (
-        <section className="flex items-center gap-4">
+        <div className="flex items-center gap-4">
           <div className="flex items-center gap-4">
             <div className="flex items-center p-3 py-2 border-[#1b1b1b] border bg-[#101010] rounded-sm space-x-2">
               <span>
@@ -30,7 +30,7 @@ export default function Navbar() {
           >
             Disconnect
           </Button>
-        </section>
+        </div>
       )}
       </div>
     </nav>
