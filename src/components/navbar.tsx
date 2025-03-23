@@ -15,7 +15,7 @@ export default function Navbar() {
         <h1 className="text-2xl font-thin">Memora</h1>
       </div>
       {!address && <WalletNavbar />}
-      {address && (
+      {address && (typeof window !== null) && (
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-4">
             <div className="flex items-center p-3 py-2 border-[#1b1b1b] border bg-[#101010] rounded-sm space-x-2">
