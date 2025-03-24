@@ -1,25 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model Course {
-  id          String      @id @default(uuid()) 
+  id          String      @id @default(uuid())
   title       String
-  instructors String[] 
-  image       String 
-  images      String[] 
-  nfts        CourseNFT[] 
-  address     String      @default("") 
+  instructors String[]
+  image       String
+  images      String[]
+  address     String      @default("")
+  nfts        CourseNFT[]
 }
 
 model CourseNFT {
-  nftId    String @id 
+  courseId String
+  tokenURI String
+  id       Int    @id @default(autoincrement())
   course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  courseId String 
-  tokenURI String 
 }

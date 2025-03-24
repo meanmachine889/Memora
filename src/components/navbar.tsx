@@ -8,7 +8,7 @@ export default function Navbar() {
   const { address } = useAccount();
   const { disconnect } = useDisconnect();
   return (
-    <nav className="flex items-center justify-center py-3 w-screen text-white">
+    <nav className="flex items-center justify-center py-3 w-screen max-w-screen text-white">
       <div className="w-[95%] flex items-center justify-between">
       <div className="flex items-center space-x-2">
         <Loader className="font-thin" />

@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <div className="flex flex-col bg-black min-h-screen w-screen items-center justify-start py-2 font-[family-name:var(--font-poppins)]">
+        <div className="flex flex-col bg-black min-h-screen w-screen max-w-screen items-center justify-start py-2 font-[family-name:var(--font-poppins)]">
           <Navbar />
           <Hero />
         </div>

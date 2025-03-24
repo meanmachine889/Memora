@@ -17,7 +17,7 @@ export default function AddNftDialog({id} : {id: string}) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="font-medium rounded-sm bg-gray-300 shadow-md"><Plus/>Add New NFT</Button>
+        <Button className="font-medium rounded-sm w-fit bg-gray-300 shadow-md"><Plus/>Add New NFT</Button>
       </DialogTrigger>
       <DialogTitle></DialogTitle>
       <DialogContent className="sm:max-w-[500px]">

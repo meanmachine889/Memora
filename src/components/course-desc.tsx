@@ -1,10 +1,9 @@
 import Image from "next/image";
 import { Course } from "./CourseCard";
-import UploadForm from "./image-upload";
 import { Button } from "./ui/button";
 import { ethers } from "ethers";
 import factoryAbi from "../../ethereum/abi/MemNftFactory.json";
-import AddAddress from "@/app/helpers/addAddress";
+import AddAddress from "@/app/helpers/helpers";
 import NftStuff from "./nft";
 import AddNftDialog from "./addNftDialog";
 
@@ -68,7 +67,7 @@ export default function CourseDesc({
   }
 
   return (
-    <div className="flex-1 py-4 min-w-full h-full flex gap-5 flex-col justify-start items-start min-h-[calc(100vh-3.5rem)]">
+    <div className="flex-1 py-4 min-w-full h-full flex flex-col gap-9 justify-start items-start min-h-[calc(100vh-3.5rem)]">
       <div className="w-full flex justify-between">
         <div className="flex flex-col">
           <p className="text-4xl mb-5">{course.title}</p>
@@ -89,25 +88,30 @@ export default function CourseDesc({
           </Button>
         )}
       </div>
-      <p className="text-2xl mb-2">Content</p>
-      <div className="gap-3 grid grid-cols-4 w-full">
-        {course.images.map((content, index) => (
-          <div key={index} className="flex flex-col relative items-center">
-            <Image
-              src={content}
-              alt={""}
-              width={400}
-              height={200}
-              quality={100}
-              className="rounded-md"
-            />
-          </div>
-        ))}
+
+      <div className="flex flex-col gap-2 w-full">
+        <p className="text-2xl mb-2">Membership NFTs</p>
+        <AddNftDialog id={course.id} />
+        <NftStuff addressCont={course.address} id={course.id} />
       </div>
-      <p className="text-2xl mb-2">Membership NFTs</p>
-      {/* <Customers /> */}
-      <AddNftDialog id={course.id} />
-      <NftStuff addressCont={course.address} />
+
+      <div className="flex flex-col gap-2">
+        <p className="text-2xl mb-2">Content</p>
+        <div className="gap-3 grid grid-cols-4 w-full">
+          {course.images.map((content, index) => (
+            <div key={index} className="flex flex-col relative items-center">
+              <Image
+                src={content}
+                alt={""}
+                width={400}
+                height={200}
+                quality={100}
+                className="rounded-md"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

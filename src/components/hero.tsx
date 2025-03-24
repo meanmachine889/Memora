@@ -9,7 +9,7 @@ import Screenshot from "./screenshot";
 export default function Hero() {
   const { address } = useAccount();
   return (
-    <div className="flex bg-[#101010] w-[95%] rounded-xl flex-col mt-5 items-center justify-between font-light pt-8 md:pt-12 lg:pt-16 text-white">
+    <div className="flex bg-[#101010] max-w-[95%] w-[95%] rounded-xl flex-col mt-5 items-center justify-between font-light pt-8 md:pt-12 lg:pt-16 text-white">
       <p className="text-center text-4xl md:text-5xl lg:text-7xl mt-4">
         <span className="bg-gradient-to-b from-white to-gray-500 text-transparent bg-clip-text">
           Monetize your Content

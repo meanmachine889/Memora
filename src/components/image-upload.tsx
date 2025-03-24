@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "./ui/button";
+import { AddIpfs } from "@/app/helpers/helpers";
 
 export default function NFTUploadForm({ id }: { id: string }) {
   const [isUploading, setIsUploading] = useState(false);
@@ -58,6 +59,14 @@ export default function NFTUploadForm({ id }: { id: string }) {
       }
 
       setUploadResult(result);
+      console.log(result);
+      const resIpfs = await AddIpfs({ courseId: id, uri: result.metadata.url });
+      if (!resIpfs.ok) {
+        alert("Failed to add to IPFS");
+      }
+      else {
+        alert("Added to IPFS");
+      }
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
