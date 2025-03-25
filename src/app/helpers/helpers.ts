@@ -24,3 +24,8 @@ export async function getNFTs({id} : {id: string}) {
   const res = await fetch(`/api/get-nft?id=${id}`);
   return res.json();
 }
+
+export async function getCourses() {
+  const res = await fetch("/api/get-all-courses");
+  return res.json();
+}

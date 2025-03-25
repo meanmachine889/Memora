@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useAccount, WagmiProvider } from "wagmi"
+import { WagmiProvider } from "wagmi"
 import { ethers } from "ethers"
 import contractAbi from "../../ethereum/abi/MemNft.json"
 import { config } from "../../config"
@@ -14,10 +14,11 @@ interface NftMetadata {
   description: string
   price: string
   image: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   attributes: any[]
 }
 
-export function Nft({ addressCont, id }: { addressCont: string; id: string }) {
+export function Nft({ addressCont, id, admin }: { addressCont: string; id: string, admin?: boolean }) {
   const deployedContract = addressCont
 
   const hardcodedRecipient = "0x24013dd89F619013476A054e520060562A1dEea7"
@@ -78,11 +79,11 @@ export function Nft({ addressCont, id }: { addressCont: string; id: string }) {
                 <p className="text-sm text-gray-600">{nft.description}</p>
               </div>
 
-              <div className="flex justify-start mt-4">
+              {admin && <div className="flex justify-start mt-4">
                 <Button variant={"outline"} onClick={() => mintNft(metadataURIs[index])} className="flex items-center text-gray-300 gap-1 rounded-full">
                   <span>Mint</span>
                 </Button>
-              </div>
+              </div>}
             </div>
           </div>
         ))}
@@ -94,13 +95,15 @@ export function Nft({ addressCont, id }: { addressCont: string; id: string }) {
 export default function NftStuff({
   addressCont,
   id,
+  admin,
 }: {
   addressCont: string
   id: string
+  admin?: boolean
 }) {
   return (
     <WagmiProvider config={config}>
-      <Nft addressCont={addressCont} id={id} />
+      <Nft addressCont={addressCont} id={id} admin={admin} />
     </WagmiProvider>
   )
 }

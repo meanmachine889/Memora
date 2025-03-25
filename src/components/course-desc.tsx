@@ -1,11 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+"use client";
+
 import Image from "next/image";
 import { Course } from "./CourseCard";
 import { Button } from "./ui/button";
 import { ethers } from "ethers";
 import factoryAbi from "../../ethereum/abi/MemNftFactory.json";
+import contractAbi from "../../ethereum/abi/MemNft.json";
 import AddAddress from "@/app/helpers/helpers";
 import NftStuff from "./nft";
 import AddNftDialog from "./addNftDialog";
+import { useAccount } from "wagmi";
+import { useState } from "react";
 
 export default function CourseDesc({
   course,
@@ -15,7 +21,9 @@ export default function CourseDesc({
   admin?: boolean;
 }) {
   const factoryAddress = "0x10Eb33fE55069795b56Fbff78628b9ee7621319c";
-
+  const { address } = useAccount();
+  const [tokenId, setTokenId] = useState<number>();
+  const [membership, setMembership] = useState<Date>();
   async function deployNFT() {
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
@@ -66,6 +74,55 @@ export default function CourseDesc({
     }
   }
 
+  async function getTokenId(
+    address: `0x${string}`
+  ): Promise<number | undefined> {
+    try {
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const contract = new ethers.Contract(
+        course.address,
+        contractAbi,
+        provider
+      );
+
+      const tid = await contract.existingMembership(address);
+      const tokenIdInt = Number(tid);
+      setTokenId(tokenIdInt);
+      if (tokenIdInt === 0) {
+        console.log("No token found for this address");
+        return undefined;
+      }
+      console.log("Token ID:", tid);
+      console.log("Token ID:", tokenIdInt);
+      console.log("Token ID:", tokenId);
+      return tokenIdInt;
+    } catch (error) {
+      console.error("Failed to get token ID:", error);
+      return undefined;
+    }
+  }
+
+  async function getMembership(tokenId: number) {
+    try {
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const contract = new ethers.Contract(
+        course.address,
+        contractAbi,
+        provider
+      );
+      const tid = BigInt(tokenId);
+      const mem = await contract.expirationTimeStamps(tid);
+      const expirationdate = new Date(mem.toNumber() * 1000);
+      setMembership(expirationdate);
+
+      console.log("Membership expires on:", expirationdate);
+      console.log("Membership expires on:", mem);
+    } catch (error) {
+      console.error("Failed to get token ID:", error);
+      return undefined;
+    }
+  }
+
   return (
     <div className="flex-1 py-4 min-w-full h-full flex flex-col gap-9 justify-start items-start min-h-[calc(100vh-3.5rem)]">
       <div className="w-full flex justify-between">
@@ -89,10 +146,13 @@ export default function CourseDesc({
         )}
       </div>
 
+      <Button onClick={() => getTokenId(address!)}>token id</Button>
+      <Button onClick={() => getMembership(tokenId!)}>membership</Button>
+
       <div className="flex flex-col gap-2 w-full">
         <p className="text-2xl mb-2">Membership NFTs</p>
-        <AddNftDialog id={course.id} />
-        <NftStuff addressCont={course.address} id={course.id} />
+        {admin && <AddNftDialog id={course.id} />}
+        <NftStuff addressCont={course.address} id={course.id} admin={admin} />
       </div>
 
       <div className="flex flex-col gap-2">
