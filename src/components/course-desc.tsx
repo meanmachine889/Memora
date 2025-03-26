@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import Image from "next/image";
@@ -11,7 +11,8 @@ import AddAddress from "@/app/helpers/helpers";
 import NftStuff from "./nft";
 import AddNftDialog from "./addNftDialog";
 import { useAccount } from "wagmi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import MembershipCard from "./membership-status";
 
 export default function CourseDesc({
   course,
@@ -112,16 +113,28 @@ export default function CourseDesc({
       );
       const tid = BigInt(tokenId);
       const mem = await contract.expirationTimeStamps(tid);
-      const expirationdate = new Date(mem.toNumber() * 1000);
+      const expirationdate = new Date(Number(mem) * 1000);
       setMembership(expirationdate);
 
       console.log("Membership expires on:", expirationdate);
-      console.log("Membership expires on:", mem);
+      console.log("Raw membership timestamp:", mem);
     } catch (error) {
-      console.error("Failed to get token ID:", error);
+      console.error("Failed to get membership:", error);
       return undefined;
     }
   }
+
+  useEffect(() => {
+    if (address) {
+      getTokenId(address);
+    }
+  }, [address]);
+
+  useEffect(() => {
+    if (tokenId) {
+      getMembership(tokenId);
+    }
+  }, [tokenId]);
 
   return (
     <div className="flex-1 py-4 min-w-full h-full flex flex-col gap-9 justify-start items-start min-h-[calc(100vh-3.5rem)]">
@@ -146,32 +159,37 @@ export default function CourseDesc({
         )}
       </div>
 
-      <Button onClick={() => getTokenId(address!)}>token id</Button>
-      <Button onClick={() => getMembership(tokenId!)}>membership</Button>
+      {!admin && <MembershipCard
+        membership={membership}
+        tokenId={tokenId?.toString()}
+        contractAddress={course.address}
+      />}
 
-      <div className="flex flex-col gap-2 w-full">
-        <p className="text-2xl mb-2">Membership NFTs</p>
+      <div className="flex flex-col w-full">
+        <p className="text-2xl">Membership NFTs</p>
         {admin && <AddNftDialog id={course.id} />}
         <NftStuff addressCont={course.address} id={course.id} admin={admin} />
       </div>
 
-      <div className="flex flex-col gap-2">
-        <p className="text-2xl mb-2">Content</p>
-        <div className="gap-3 grid grid-cols-4 w-full">
-          {course.images.map((content, index) => (
-            <div key={index} className="flex flex-col relative items-center">
-              <Image
-                src={content}
-                alt={""}
-                width={400}
-                height={200}
-                quality={100}
-                className="rounded-md"
-              />
-            </div>
-          ))}
+      {(membership && membership >= new Date() || admin) && (
+        <div className="flex flex-col gap-2">
+          <p className="text-2xl mb-2">Content</p>
+          <div className="gap-3 grid grid-cols-4 w-full">
+            {course.images.map((content, index) => (
+              <div key={index} className="flex flex-col relative items-center">
+                <Image
+                  src={content}
+                  alt={""}
+                  width={400}
+                  height={200}
+                  quality={100}
+                  className="rounded-md"
+                />
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
