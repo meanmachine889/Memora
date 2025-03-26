@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { Calendar, Home, Inbox, Loader, Search, Settings } from "lucide-react";
+import { Home, Inbox, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   Sidebar,
@@ -29,21 +29,6 @@ const items = [
     title: "My Content",
     url: "/dashboard/content",
     icon: Inbox,
-  },
-  {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
   },
 ];
 

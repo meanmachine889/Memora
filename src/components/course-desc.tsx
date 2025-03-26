@@ -75,9 +75,7 @@ export default function CourseDesc({
     }
   }
 
-  async function getTokenId(
-    address: `0x${string}`
-  ): Promise<number | undefined> {
+  async function getTokenId(address: `0x${string}`) {
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const contract = new ethers.Contract(
@@ -88,21 +86,17 @@ export default function CourseDesc({
 
       const tid = await contract.existingMembership(address);
       const tokenIdInt = Number(tid);
+
+      console.log("Raw Token ID (BigInt):", tid);
+      console.log("Converted Token ID (Number):", tokenIdInt);
       setTokenId(tokenIdInt);
-      if (tokenIdInt === 0) {
-        console.log("No token found for this address");
-        return undefined;
-      }
-      console.log("Token ID:", tid);
-      console.log("Token ID:", tokenIdInt);
-      console.log("Token ID:", tokenId);
-      return tokenIdInt;
+
+      console.log("State after setTokenId:", tokenIdInt);
     } catch (error) {
       console.error("Failed to get token ID:", error);
-      return undefined;
+      setTokenId(undefined);
     }
   }
-
   async function getMembership(tokenId: number) {
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
@@ -115,7 +109,6 @@ export default function CourseDesc({
       const mem = await contract.expirationTimeStamps(tid);
       const expirationdate = new Date(Number(mem) * 1000);
       setMembership(expirationdate);
-
       console.log("Membership expires on:", expirationdate);
       console.log("Raw membership timestamp:", mem);
     } catch (error) {
@@ -131,47 +124,61 @@ export default function CourseDesc({
   }, [address]);
 
   useEffect(() => {
-    if (tokenId) {
+    if (tokenId !== undefined && tokenId !== -1) {
+      console.log("Getting membership for token ID:", tokenId);
       getMembership(tokenId);
     }
   }, [tokenId]);
 
   return (
     <div className="flex-1 py-4 min-w-full h-full flex flex-col gap-9 justify-start items-start min-h-[calc(100vh-3.5rem)]">
-      <div className="w-full flex justify-between">
+      <div className="w-full flex gap-7 justify-start">
         <div className="flex flex-col">
-          <p className="text-4xl mb-5">{course.title}</p>
+          <div className="flex gap-7">
+            <p className="text-4xl mb-5">{course.title}</p>
+            {!course.address && admin && (
+              <Button
+                onClick={deployNFT}
+                className="w-fit bg-[#101010] border-2 text-gray-400"
+              >
+                Deploy
+              </Button>
+            )}
+          </div>
           {!course.address && (
-            <p className="text-xl mb-9 text-gray-500">Not deployed yet</p>
+            <p className="text-xl mb-9 text-gray-500">
+              Deploy on blockchain to start minting NFTs
+            </p>
           )}
           {course.address && (
-            <div className="flex h-fit items-center p-3 py-2 border-[#1b1b1b] border bg-[#101010] text-gray-400 rounded-sm space-x-2">
+            <div className="flex h-fit w-fit items-center p-3 py-2 border-[#1b1b1b] border bg-[#101010] text-gray-400 rounded-sm space-x-2">
               {course.address
                 ? `${course.address.slice(0, 11)}...${course.address.slice(-4)}`
                 : "Loading..."}
             </div>
           )}
         </div>
-        {!course.address && admin && (
-          <Button onClick={deployNFT} className="">
-            Deploy
-          </Button>
-        )}
       </div>
 
-      {!admin && <MembershipCard
-        membership={membership}
-        tokenId={tokenId?.toString()}
-        contractAddress={course.address}
-      />}
+      {true && (
+        <MembershipCard
+          membership={membership}
+          tokenId={tokenId?.toString()}
+          contractAddress={course.address}
+        />
+      )}
 
-      <div className="flex flex-col w-full">
-        <p className="text-2xl">Membership NFTs</p>
-        {admin && <AddNftDialog id={course.id} />}
-        <NftStuff addressCont={course.address} id={course.id} admin={admin} />
-      </div>
+      {!(membership && membership >= new Date()) && !(address == course.instructors[0]) && course.address && (
+        <div className="flex flex-col w-full">
+          <div className="flex gap-7">
+            <p className="text-2xl mb-1">Membership NFTs</p>
+            {admin && course.address && <AddNftDialog id={course.id} />}
+          </div>
+          <NftStuff addressCont={course.address} id={course.id} admin={address == course.instructors[0]} />
+        </div>
+      )}
 
-      {(membership && membership >= new Date() || admin) && (
+      {((membership && membership >= new Date()) || admin) && (
         <div className="flex flex-col gap-2">
           <p className="text-2xl mb-2">Content</p>
           <div className="gap-3 grid grid-cols-4 w-full">

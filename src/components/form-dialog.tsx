@@ -15,25 +15,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { useAccount } from "wagmi";
 
 export default function FormDialog() {
   const [open, setOpen] = useState(false);
-  const [instructors, setInstructors] = useState<string[]>([]);
   const [images, setImages] = useState<string[]>([]);
-  const [newInstructor, setNewInstructor] = useState("");
   const [newImage, setNewImage] = useState("");
   const [formState, setFormState] = useState({ message: "", success: false });
-
-  const handleAddInstructor = () => {
-    if (newInstructor.trim()) {
-      setInstructors([...instructors, newInstructor.trim()]);
-      setNewInstructor("");
-    }
-  };
-
-  const handleRemoveInstructor = (index: number) => {
-    setInstructors(instructors.filter((_, i) => i !== index));
-  };
+  const {address} = useAccount();
+  const [instructors, setInstructors] = useState<string[]>([address!]);
 
   const handleAddImage = () => {
     if (newImage.trim()) {
@@ -120,46 +110,7 @@ export default function FormDialog() {
               />
             </div>
 
-            {/* Instructors Section */}
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label className="text-left font-normal">Instructors</Label>
-              <div className="col-span-3 space-y-2">
-                <div className="flex gap-2">
-                  <Input
-                    value={newInstructor}
-                    onChange={(e) => setNewInstructor(e.target.value)}
-                    placeholder="Add instructor"
-                    className="flex-1"
-                  />
-                  <Button
-                    type="button"
-                    size="icon"
-                    onClick={handleAddInstructor}
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {instructors.map((instructor, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-1 rounded-md bg-secondary px-2 py-1 text-sm"
-                    >
-                      {instructor}
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveInstructor(index)}
-                        className="ml-1 rounded-full hover:bg-destructive/20"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Additional Images Section */}
+            
             <div className="grid grid-cols-4 items-center gap-4">
               <Label className="text-left font-normal">Content</Label>
               <div className="col-span-3 space-y-2">
