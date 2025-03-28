@@ -54,7 +54,7 @@ export default function FormDialog({ fetchCourses }: { fetchCourses: () => Promi
     };
 
     try {
-      const response = await fetch("http://localhost:3000/api/create-course", {
+      const response = await fetch("/api/create-course", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
