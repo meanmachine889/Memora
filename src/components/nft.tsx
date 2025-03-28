@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -9,6 +10,7 @@ import Image from "next/image";
 import { Button } from "./ui/button";
 import { getNFTs } from "@/app/helpers/helpers";
 import { Input } from "./ui/input";
+import { toast } from "sonner";
 
 interface NftMetadata {
   name: string;
@@ -33,9 +35,12 @@ export function Nft({
   const [nftData, setNftData] = useState<NftMetadata[]>([]);
   const [metadataURIs, setMetadataURIs] = useState<string[]>([]);
   const [receiver, setReceiver] = useState<string>("");
+  const [Loading, setLoading] = useState<boolean>(false);
+  const [minting, setMinting] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchMetadata() {
+      setLoading(true);
       const res = await getNFTs({ id });
       console.log(res);
       setMetadataURIs(res);
@@ -45,12 +50,13 @@ export function Nft({
             const response = await fetch(uri);
             return response.json();
           } catch (error) {
-            console.error("Error fetching metadata:", error);
+            toast("Error fetching NFTs");
             return null;
           }
         })
       );
       setNftData(data.filter((item) => item !== null));
+      setLoading(false);
     }
 
     fetchMetadata();
@@ -58,6 +64,7 @@ export function Nft({
 
   async function mintNft(tokenURI: string) {
     try {
+      setMinting(true);
       const pro = new ethers.BrowserProvider(window.ethereum);
       const signer = await pro!.getSigner();
       const contract = new ethers.Contract(
@@ -68,19 +75,22 @@ export function Nft({
       const rec = receiver ? receiver : address;
       const tx = await contract.mintNFT(rec, 180, tokenURI, { gasLimit: 500000 });
       await tx.wait();
-      console.log(`NFT minted successfully: ${tokenURI}`);
+      toast(`NFT minted successfully to ${rec}`);
     } catch (error) {
-      console.error("Error minting NFT:", error);
+      toast("Error minting NFT");
+    } finally {
+      setMinting(false);
     }
   }
 
   return (
     <div className="flex flex-col w-full mt-5">
       <div className="grid md:grid-cols-4 gap-3 w-full">
-        {nftData.length === 0 && (
+        {!Loading && nftData.length === 0 && (
           <div className="text-gray-500">No NFTs found</div>
         )}
-        {nftData.map((nft, index) => (
+        {Loading && <div>Loading NFTs</div>}
+        {!Loading && nftData.map((nft, index) => (
           <div
             key={index}
             className="flex flex-col items-stretch border-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md bg-[#101010] transition-shadow"
@@ -110,10 +120,11 @@ export function Nft({
                   />
                   <Button
                     variant={"outline"}
+                    disabled={minting}
                     onClick={() => mintNft(metadataURIs[index])}
                     className="flex items-center text-gray-300 gap-1 rounded-md"
                   >
-                    <span>Mint</span>
+                    <span>mint</span>
                   </Button>
                 </div>
               )}

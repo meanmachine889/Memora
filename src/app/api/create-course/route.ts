@@ -21,9 +21,8 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error creating course:", error);
     return NextResponse.json(
-      { error: "Failed to create course" },
+      { error: "Failed to create course" + error },
       { status: 500 }
     );
   }

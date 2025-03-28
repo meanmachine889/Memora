@@ -1,15 +1,25 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import { useAccount } from "wagmi";
 import WalletDialog from "./wallet-dialog";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Screenshot from "./screenshot";
+import { useEffect, useState } from "react";
 
 export default function Hero() {
   const { address } = useAccount();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) return null; 
+
   return (
-    <div className="flex bg-[#101010] max-w-[95%] w-[95%] max-h-full rounded-xl flex-col mt-5 items-center justify-between font-light pt-8 md:pt-12 lg:pt-16 text-white">
+    <div className="flex bg-[#101010] max-w-[95%] w-[95%] max-h-full rounded-xl flex-col mt-5 items-center justify-between md:py-0 py-7 font-light pt-8 md:pt-12 lg:pt-16 text-white">
       <p className="text-center text-4xl md:text-5xl lg:text-7xl mt-4">
         <span className="bg-gradient-to-b from-white to-gray-500 text-transparent bg-clip-text">
           Monetize your Content
@@ -26,15 +36,14 @@ export default function Hero() {
       {!address && <WalletDialog />}
       {address && (
         <div className="flex flex-col items-center justify-center mt-8">
-          <Button
-            className="px-4 py-6 rounded-sm text-lg  transition-all font-normal bg-gradient-to-b from-gray-300 to-gray-400 text-gray-900 hover:bg-gray-200"
-          >
+          <Button className="px-4 py-6 rounded-sm text-lg transition-all font-normal bg-gradient-to-b from-gray-300 to-gray-400 text-gray-900 hover:bg-gray-200">
             <Link className="gap-2 hover:gap-4 transition-all flex items-center" href={"/dashboard"}>
-              Dashboard <ArrowRight className="" />
+              Dashboard <ArrowRight />
             </Link>
           </Button>
         </div>
       )}
+
       <Screenshot />
     </div>
   );

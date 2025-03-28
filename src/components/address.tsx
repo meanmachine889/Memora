@@ -1,12 +1,14 @@
 "use client";
+
 import { useAccount, useDisconnect, WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { config } from "../../config";
 import { Button } from "./ui/button";
 import { LogOut } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const queryClient = new QueryClient();
-
 export default function Address() {
   return (
     <WagmiProvider config={config}>
@@ -18,10 +20,21 @@ export default function Address() {
 }
 
 function AddressProvider() {
+  const router = useRouter();
   const { address } = useAccount();
   const { disconnect } = useDisconnect();
+  const [isClient, setIsClient] = useState(false);
 
-  if (typeof window === "undefined") return null;
+  const disconnectAcc = async () => {
+    disconnect();
+    router.push("/");
+  }
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) return null; 
 
   return (
     <div className="flex max-w-full items-center space-x-4">
@@ -31,7 +44,7 @@ function AddressProvider() {
         </div>
       </div>
       <Button
-        onClick={() => disconnect()}
+        onClick={disconnectAcc}
         className="px-2 py-4 rounded-sm text-md font-normal bg-[#3f3f3f] text-gray-400 hover:bg-gray-200"
       >
         <LogOut className="h-4 w-4" />

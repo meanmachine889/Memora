@@ -35,7 +35,6 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ courses });
   } catch (error) {
-    console.error("Error finding course:", error);
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }

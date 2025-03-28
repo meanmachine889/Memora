@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
@@ -13,10 +14,11 @@ import AddNftDialog from "./addNftDialog";
 import { useAccount } from "wagmi";
 import { useEffect, useState } from "react";
 import MembershipCard from "./membership-status";
+import { toast } from "sonner";
 
 export default function CourseDesc({
   course,
-  admin,
+  admin
 }: {
   course: Course;
   admin?: boolean;
@@ -25,8 +27,10 @@ export default function CourseDesc({
   const { address } = useAccount();
   const [tokenId, setTokenId] = useState<number>();
   const [membership, setMembership] = useState<Date>();
+  const [deployState, setDeployState] = useState<string>("");
   async function deployNFT() {
     try {
+      setDeployState("deploying");
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
       const contract = new ethers.Contract(factoryAddress, factoryAbi, signer);
@@ -49,29 +53,32 @@ export default function CourseDesc({
 
           if (parsedLog && parsedLog.name === eventName) {
             const deployedAddress = parsedLog.args[1];
-            console.log("New NFT Contract Address:", deployedAddress);
-            alert(`NFT Contract Deployed at: ${deployedAddress}`);
+            toast(`Contract Deployed at: ${deployedAddress}`);
             const res = await AddAddress({
               id: course.id,
               address: deployedAddress,
             });
-            console.log(res);
             if (res.ok) {
-              alert("Address added to course");
+              toast("Address added to cloud");
               window.location.reload();
+              setDeployState("deployed");
+              return;
             } else {
-              alert("Error adding address to course");
+              setDeployState("failed");
+              toast("Error adding address to cloud deploy again");
             }
-            return;
           }
         } catch {
+          setDeployState("failed");
           continue;
+        } finally {
+          setDeployState("deployed");
         }
       }
 
       console.log("Couldn't find MemNFTCreated event in logs");
     } catch (error) {
-      console.error("Deployment failed:", error);
+      toast("Deployment failed");
     }
   }
 
@@ -93,7 +100,6 @@ export default function CourseDesc({
 
       console.log("State after setTokenId:", tokenIdInt);
     } catch (error) {
-      console.error("Failed to get token ID:", error);
       setTokenId(undefined);
     }
   }
@@ -112,7 +118,6 @@ export default function CourseDesc({
       console.log("Membership expires on:", expirationdate);
       console.log("Raw membership timestamp:", mem);
     } catch (error) {
-      console.error("Failed to get membership:", error);
       return undefined;
     }
   }
@@ -135,13 +140,14 @@ export default function CourseDesc({
       <div className="w-full flex gap-7 justify-start">
         <div className="flex flex-col">
           <div className="flex gap-7">
-            <p className="text-4xl mb-5">{course.title}</p>
+            <p className="md:text-4xl text-xl mb-5">{course.title}</p>
             {!course.address && admin && (
               <Button
                 onClick={deployNFT}
+                disabled={deployState === "deploying"}
                 className="w-fit bg-[#101010] border-2 text-gray-400"
               >
-                Deploy
+                {deployState === "deploying" ? "Deploying" : "Deploy"}
               </Button>
             )}
           </div>
@@ -151,16 +157,34 @@ export default function CourseDesc({
             </p>
           )}
           {course.address && (
-            <div className="flex h-fit w-fit items-center p-3 py-2 border-[#1b1b1b] border bg-[#101010] text-gray-400 rounded-sm space-x-2">
-              {course.address
-                ? `${course.address.slice(0, 11)}...${course.address.slice(-4)}`
-                : "Loading..."}
+            <div className="flex md:flex-row flex-col md:items-center justify-start w-full md:text-lg text-md gap-2 text-gray-500 mt-2">
+              Deployed at :{" "}
+              <div className="flex h-fit w-fit items-center p-3 py-2 border-[#1b1b1b] border bg-[#101010] text-gray-400 rounded-sm space-x-2">
+                {course.address
+                  ? `${course.address.slice(0, 11)}...${course.address.slice(
+                      -4
+                    )}`
+                  : "Loading..."}
+              </div>
+            </div>
+          )}
+          {course.instructors.length > 0 && (
+            <div className="flex md:flex-row flex-col md:items-center justify-start w-full md:text-lg text-md gap-2 text-gray-500 mt-2">
+              Created by :{" "}
+              <div className="flex h-fit w-fit items-center p-3 py-2 border-[#1b1b1b] border bg-[#101010] text-gray-400 rounded-sm space-x-2">
+                {course.instructors[0]
+                  ? `${course.instructors[0].slice(
+                      0,
+                      11
+                    )}...${course.instructors[0].slice(-4)}`
+                  : "Loading..."}
+              </div>
             </div>
           )}
         </div>
       </div>
 
-      {true && (
+      {!(address == course.instructors[0]) && (
         <MembershipCard
           membership={membership}
           tokenId={tokenId?.toString()}
@@ -168,29 +192,37 @@ export default function CourseDesc({
         />
       )}
 
-      {!(membership && membership >= new Date()) && !(address == course.instructors[0]) && course.address && (
+
+      {!(membership && membership >= new Date() && !(address === course.instructors[0])) && course.address && (
         <div className="flex flex-col w-full">
-          <div className="flex gap-7">
-            <p className="text-2xl mb-1">Membership NFTs</p>
-            {admin && course.address && <AddNftDialog id={course.id} />}
+          <div className="flex md:flex-row flex-col md:gap-7">
+            <p className="md:text-2xl text-lg mb-1">Membership NFTs</p>
+            {address === course.instructors[0] && course.address && (
+              <AddNftDialog id={course.id} />
+            )}
           </div>
-          <NftStuff addressCont={course.address} id={course.id} admin={address == course.instructors[0]} />
+          <NftStuff
+            addressCont={course.address}
+            id={course.id}
+            admin={address == course.instructors[0]}
+          />
         </div>
       )}
 
-      {((membership && membership >= new Date()) || admin) && (
-        <div className="flex flex-col gap-2">
-          <p className="text-2xl mb-2">Content</p>
-          <div className="gap-3 grid grid-cols-4 w-full">
+      {((membership && membership >= new Date()) ||
+        address == course.instructors[0]) && (
+        <div className="flex flex-col gap-2 w-full">
+          <p className="md:text-2xl text-lg mb-2">Content</p>
+          <div className="gap-2 grid md:grid-cols-4 w-full">
             {course.images.map((content, index) => (
-              <div key={index} className="flex flex-col relative items-center">
+              <div key={index} className="relative w-full">
                 <Image
                   src={content}
                   alt={""}
-                  width={400}
+                  width={200}
                   height={200}
                   quality={100}
-                  className="rounded-md"
+                  className="rounded-md w-full"
                 />
               </div>
             ))}

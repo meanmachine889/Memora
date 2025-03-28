@@ -7,9 +7,9 @@ import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "./ui/button";
 import contractAbi from "../../ethereum/abi/MemNft.json";
 import { ethers } from "ethers";
-import { useWalletClient } from "wagmi";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Input } from "./ui/input";
+import { toast } from "sonner";
 
 interface MembershipCardProps {
   membership?: Date | null;
@@ -23,22 +23,12 @@ export default function MembershipCard({
   contractAddress,
 }: MembershipCardProps) {
   const isActive = membership && membership >= new Date();
-  const { data: walletClient } = useWalletClient();
-  const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
   const [receiver, setReceiver] = useState<string>("");
-  useEffect(() => {
-    console.log("membership : ", membership);
-    console.log("tokenId : ", tokenId);
-    if (walletClient) {
-      const ethersProvider = new ethers.BrowserProvider(
-        walletClient.transport as unknown as ethers.Eip1193Provider
-      );
-      setProvider(ethersProvider);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletClient]);
+  const [state, setState] = useState("");
   async function transferNFT() {
     try {
+      setState("loading");
+      const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider!.getSigner();
       const Contract = new ethers.Contract(
         contractAddress!,
@@ -51,23 +41,27 @@ export default function MembershipCard({
         tokenId
       );
       await tx.wait();
-      console.log("Transaction sent:", tx.hash);
-      window.location.reload();
+      toast("Membership transferred successfully to " + receiver);
+      setTimeout(() => {
+        window.location.reload();
+      }, 5000);
     } catch (error) {
-      console.error(error);
+      toast(error instanceof Error ? error.message.split(":")[1].trim() : "An unknown error occurred");
+    } finally {
+      setState("");
     }
   }
 
   return (
     <Card className="bg-[#101010] border-[#1a1a1a] w-full max-w-md">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-zinc-500 font-normal">
+        <CardTitle className="text-zinc-500 md:text-lg text-sm font-normal">
           Membership Status
         </CardTitle>
         {isActive && (
           <Badge
             variant="outline"
-            className="bg-green-500/20 text-green-400 border-green-700 px-3 py-1"
+            className="bg-green-500/20 text-green-400 border-green-700 px-1 md:px-3 py-1"
           >
             <CheckCircle2 className="w-4 h-4 mr-1" />
             Active
@@ -84,7 +78,7 @@ export default function MembershipCard({
           <div className="flex justify-between w-full">
             {membership && (
               <div className="flex items-center space-x-3">
-                <div>
+                <div className="md:text-lg text-sm">
                   <p className="text-sm text-zinc-400">Expires on</p>
                   <p className="text-gray-300 font-normal">
                     {membership.toDateString()}
@@ -114,9 +108,10 @@ export default function MembershipCard({
             />
             <Button
               onClick={() => transferNFT()}
+              disabled = {state ==  "loading" || !receiver}
               className="bg-[#101010] border-2 text-gray-300 hover:bg-[#1a1a1a]"
             >
-              Transfer
+              {state == "loading" ? "Transferring..." : "Transfer"}
               <ArrowRight />
             </Button>
           </div>

@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Screenshot() {
   return (
-    <div className="relative mx-9 mt-9 border-4 border-[#171717] rounded-t-lg shadow-md">
+    <div className="relative md:block hidden mx-9 mt-9 border-4 border-[#171717] rounded-t-lg shadow-md">
       <Image
         width={2100}
         height={1000}

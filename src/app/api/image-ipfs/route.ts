@@ -32,7 +32,6 @@ async function uploadImageToPinata(imageFile: File) {
       imageUrl: `https://gateway.pinata.cloud/ipfs/${result.IpfsHash}`
     };
   } catch (error) {
-    console.error("Image upload error:", error);
     return { success: false, error: (error as Error).message };
   }
 }
@@ -61,7 +60,6 @@ async function uploadMetadataToPinata(metadata: any) {
       metadataUrl: `https://gateway.pinata.cloud/ipfs/${result.IpfsHash}`
     };
   } catch (error) {
-    console.error("Metadata upload error:", error);
     return { success: false, error: (error as Error).message };
   }
 }
@@ -131,7 +129,6 @@ export async function POST(req: NextRequest) {
     });
     
   } catch (error) {
-    console.error("Upload Error:", error);
     return NextResponse.json({ error: `Upload failed: ${(error as Error).message}` }, { status: 500 });
   }
 }
