@@ -35,8 +35,8 @@ export default function MyCourses() {
 
   return (
     <div className="py-4 flex flex-col justify-start items-start">
-      <div className="flex justify-between items-center w-full">
-        <p className="text-2xl mb-9">Your Courses</p>
+      <div className="flex md:flex-row flex-col md:justify-between md:gap-0 md:pb-0 md:mb-0 mb-4 gap-4 justify-start items-center w-full">
+        <p className="text-2xl md:mb-9">Your Courses</p>
         <FormDialog fetchCourses={fetchCourses} />
       </div>
       {courses.length > 0 ? (

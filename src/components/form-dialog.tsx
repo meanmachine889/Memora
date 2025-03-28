@@ -95,7 +95,7 @@ export default function FormDialog({ fetchCourses }: { fetchCourses: () => Promi
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4 mt-5">
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
               <Label htmlFor="title" className="text-left font-normal">
                 Title
               </Label>
@@ -108,7 +108,7 @@ export default function FormDialog({ fetchCourses }: { fetchCourses: () => Promi
                 disabled={isLoading}
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
               <Label htmlFor="image" className="text-left font-normal">
                 Thumbnail
               </Label>
@@ -122,7 +122,7 @@ export default function FormDialog({ fetchCourses }: { fetchCourses: () => Promi
               />
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
               <Label className="text-left font-normal">Content</Label>
               <div className="col-span-3 space-y-2">
                 <div className="flex gap-2">
