@@ -1,4 +1,4 @@
-# Web3 NFT Membership Platform
+# Memora - Web3 NFT Membership Platform
 
 ## Overview
 
@@ -15,7 +15,7 @@ This project tokenizes memberships as NFTs, allowing users to own, trade, and tr
 
 - **Frontend:** Next.js, React, TailwindCSS, Wagmi
 - **Backend:** Prisma, PostgreSQL (NeonDB), Vercel Serverless Functions
-- **Blockchain:** Solidity, Ethers.js, Smart Contracts (Ethereum/Solana compatible)
+- **Blockchain:** Solidity, Ethers.js, Smart Contracts (Ethereum compatible)
 - **Hosting:** Vercel
 
 ## Installation & Setup
