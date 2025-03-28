@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Memora - Web3 NFT Membership Platform
 
-## Getting Started
+## Overview
 
-First, run the development server:
+This project tokenizes memberships as NFTs, allowing users to own, trade, and transfer their subscriptions without relying on banks or middlemen. Built with **Next.js, Wagmi, ethers.js, and Prisma**, the platform ensures decentralized access control for memberships.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **NFT-Based Memberships** – Users can mint, transfer, and trade memberships as NFTs.
+- **Seamless Web3 Authentication** – Connect wallet using WalletConnect or MetaMask.
+- **On-Chain Verification** – Smart contracts handle membership validation.
+- **Decentralized & Permissionless** – No centralized authority; memberships are user-controlled.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Frontend:** Next.js, React, TailwindCSS, Wagmi
+- **Backend:** Prisma, PostgreSQL (NeonDB), Vercel Serverless Functions
+- **Blockchain:** Solidity, Ethers.js, Smart Contracts (Ethereum compatible)
+- **Hosting:** Vercel
 
-## Learn More
+## Installation & Setup
 
-To learn more about Next.js, take a look at the following resources:
+### Prerequisites
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Node.js (v18+)
+- MetaMask or WalletConnect-enabled wallet
+- PostgreSQL database (NeonDB recommended)
+- Ethereum/Solana testnet wallet for contract interactions
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Steps
 
-## Deploy on Vercel
+1. **Clone the repository**
+   ```sh
+   git clone https://github.com/meanmachine889/Memora.git
+   cd Memora
+   ```
+2. **Install dependencies**
+   ```sh
+   npm install
+   ```
+3. **Set up environment variables** (create a `.env` file)
+   ```env
+   DATABASE_URL=postgresql://your_username:your_password@your_database_url/neondb?sslmode=require
+   PINATA_API_KEY=your_pinata_api_key
+   PINATA_SECRET_API_KEY=your_pinata_secret_api_key
+   ```
+4. **Run Prisma migrations**
+   ```sh
+   npx prisma migrate dev
+   ```
+5. **Start the development server**
+   ```sh
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Smart Contract
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The NFT Membership contract is deployed on **Ethereum** and handles:
+
+- Minting new memberships
+- Validating active memberships
+- Enabling transfers
+
+Contract Address: `0x10Eb33fE55069795b56Fbff78628b9ee7621319c`
+
