@@ -161,9 +161,7 @@ export default function CourseDesc({
               Deployed at :{" "}
               <div className="flex h-fit w-fit items-center p-3 py-2 border-[#1b1b1b] border bg-[#101010] text-gray-400 rounded-sm space-x-2">
                 {course.address
-                  ? `${course.address.slice(0, 11)}...${course.address.slice(
-                      -4
-                    )}`
+                  ? `${course.address}`
                   : "Loading..."}
               </div>
             </div>
@@ -173,10 +171,7 @@ export default function CourseDesc({
               Created by :{" "}
               <div className="flex h-fit w-fit items-center p-3 py-2 border-[#1b1b1b] border bg-[#101010] text-gray-400 rounded-sm space-x-2">
                 {course.instructors[0]
-                  ? `${course.instructors[0].slice(
-                      0,
-                      11
-                    )}...${course.instructors[0].slice(-4)}`
+                  ? `${course.instructors[0]}`
                   : "Loading..."}
               </div>
             </div>
