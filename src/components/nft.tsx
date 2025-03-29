@@ -17,8 +17,10 @@ interface NftMetadata {
   description: string;
   price: string;
   image: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  attributes: any[];
+  attributes: {
+    contentId: string;
+    duration: string;
+  };
 }
 
 export function Nft({
@@ -62,21 +64,32 @@ export function Nft({
     fetchMetadata();
   }, [id]);
 
-  async function mintNft(tokenURI: string) {
+  async function mintNft(tokenURI: string, index: number) {
     try {
       setMinting(true);
       const pro = new ethers.BrowserProvider(window.ethereum);
-      const signer = await pro!.getSigner();
+      const signer = await pro.getSigner();
       const contract = new ethers.Contract(
         deployedContract,
         contractAbi,
         signer
       );
+
+      const nft = nftData[index];
+      const duration = nft.attributes?.duration
+        ? parseInt(nft.attributes.duration)
+        : 180;
+
+      alert(`Minting NFT with duration: ${duration} days`);
+
       const rec = receiver ? receiver : address;
-      const tx = await contract.mintNFT(rec, 180, tokenURI, { gasLimit: 500000 });
+      const tx = await contract.mintNFT(rec, duration, tokenURI, {
+        gasLimit: 500000,
+      });
       await tx.wait();
       toast(`NFT minted successfully to ${rec}`);
     } catch (error) {
+      console.error("Minting error:", error);
       toast("Error minting NFT");
     } finally {
       setMinting(false);
@@ -90,47 +103,48 @@ export function Nft({
           <div className="text-gray-500">No NFTs found</div>
         )}
         {Loading && <div>Loading NFTs</div>}
-        {!Loading && nftData.map((nft, index) => (
-          <div
-            key={index}
-            className="flex flex-col items-stretch border-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md bg-[#101010] transition-shadow"
-          >
-            <div className="relative w-full rounded-sm aspect-[11/9]">
-              <Image
-                src={nft.image || "/placeholder.svg"}
-                alt={nft.name}
-                layout="fill"
-                className="object-cover "
-              />
-            </div>
-
-            <div className="flex flex-col justify-between py-2 px-2 w-full flex-1 ">
-              <div className="flex flex-col gap-2 flex-1 items-start">
-                <h3 className="font-normal text-gray-300 text-lg">
-                  {nft.name}
-                </h3>
-                <p className="text-sm text-gray-600">{nft.description}</p>
+        {!Loading &&
+          nftData.map((nft, index) => (
+            <div
+              key={index}
+              className="flex flex-col items-stretch border-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md bg-[#101010] transition-shadow"
+            >
+              <div className="relative w-full rounded-sm aspect-[11/9]">
+                <Image
+                  src={nft.image || "/placeholder.svg"}
+                  alt={nft.name}
+                  layout="fill"
+                  className="object-cover "
+                />
               </div>
 
-              {admin && (
-                <div className="flex justify-start gap-3 mt-4">
-                  <Input
-                    onChange={(e) => setReceiver(e.target.value)}
-                    placeholder={`${address}`}
-                  />
-                  <Button
-                    variant={"outline"}
-                    disabled={minting}
-                    onClick={() => mintNft(metadataURIs[index])}
-                    className="flex items-center text-gray-300 gap-1 rounded-md"
-                  >
-                    <span>mint</span>
-                  </Button>
+              <div className="flex flex-col justify-between py-2 px-2 w-full flex-1 ">
+                <div className="flex flex-col gap-2 flex-1 items-start">
+                  <h3 className="font-normal text-gray-300 text-lg">
+                    {nft.name}
+                  </h3>
+                  <p className="text-sm text-gray-600">{nft.description}</p>
                 </div>
-              )}
+
+                {admin && (
+                  <div className="flex justify-start gap-3 mt-4">
+                    <Input
+                      onChange={(e) => setReceiver(e.target.value)}
+                      placeholder={`${address}`}
+                    />
+                    <Button
+                      variant={"outline"}
+                      disabled={minting}
+                      onClick={() => mintNft(metadataURIs[index], index)}
+                      className="flex items-center text-gray-300 gap-1 rounded-md"
+                    >
+                      <span>mint</span>
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );
