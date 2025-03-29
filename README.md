@@ -15,7 +15,7 @@ Memora is a decentralized platform that tokenizes memberships as NFTs, allowing 
 6. **Deploy it to the blockchain** – Register your course as an NFT membership.
 7. **After deployment, add a new NFT**:
    - Data is uploaded to **IPFS**.
-   - Ensure the **image size** isn't too large.
+   - Ensure the **image size** isn't too large (upload might fail due to payload being too large so just change image and try again).
    - **Duration** is the number of days for the membership.
 8. **Mint the NFT**:
    - If the receiver field is empty, the NFT will be minted to your wallet.
