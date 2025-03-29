@@ -7,7 +7,7 @@ This project tokenizes memberships as NFTs, allowing users to own, trade, and tr
 ## Features
 
 - **NFT-Based Memberships** – Users can mint, transfer, and trade memberships as NFTs.
-- **Seamless Web3 Authentication** – Connect wallet using WalletConnect or MetaMask.
+- **Seamless Web3 Authentication** – Connect wallet using MetaMask.
 - **On-Chain Verification** – Smart contracts handle membership validation.
 - **Decentralized & Permissionless** – No centralized authority; memberships are user-controlled.
 
