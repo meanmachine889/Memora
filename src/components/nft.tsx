@@ -130,6 +130,7 @@ export function Nft({
                   <div className="flex justify-start gap-3 mt-4">
                     <Input
                       onChange={(e) => setReceiver(e.target.value)}
+                      placeholder="Enter Receiver's Address"
                     />
                     <Button
                       variant={"outline"}
