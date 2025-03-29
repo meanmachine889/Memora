@@ -6,7 +6,7 @@ Memora is a decentralized platform that tokenizes memberships as NFTs, allowing 
 
 ## Steps to Use the Platform
 
-1. **Connect your wallet** – Use MetaMask or WalletConnect.
+1. **Connect your wallet** – Use MetaMask.
 2. **Go to the Dashboard** – Navigate through the platform.
 3. **Go to "My Content" from the sidebar** – Manage your courses.
 4. **Add your course** – Enter course details.
